@@ -1,0 +1,579 @@
+<!-- 
+
+Minisite prototype for https://twentyonepilots.is/7-21.
+Based on https://codepen.io/editor/ccrch/pen/019fdc2f-bce2-79e7-bbae-d0e09d7fc1d5 canvas experiment.
+
+Song:
+Twenty One Pilots Cover The White Stripes "Seven Nation Army" | Rock Hall 2025 Induction
+https://youtu.be/-D_uT0kXlRw
+
+Made with <❤/> at Vettvangur - https://vettvangur.is/
+Ccrch </> playground - https://ccrch.com/playground
+ 
+-->
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Pen</title>       
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>  
+<script type="importmap">
+{
+  "imports": {
+    "gsap": "https://esm.sh/gsap@^3.15.0"
+  }
+}
+</script>
+
+<!--    <link rel="stylesheet" href="./styles.css"> -->
+    <style>
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+html {
+  --playground-body-color-background: color-mix(in srgb, #212121, black 21%);
+  --playground-body-color-text: #e0e0e0;
+  scrollbar-width: thin;
+  color-scheme: dark light;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--playground-body-color-background);
+  color: var(--playground-body-color-text);
+  font-family: "DM Sans", sans-serif;
+}
+body * {
+  box-sizing: border-box;
+}
+
+.top-7-21 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  background: var(--playground-body-color-background);
+}
+.top-7-21-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 21;
+  padding: 0 79px;
+  background: var(--playground-body-color-background);
+  color: color-mix(in srgb, #fff, transparent 42%);
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 2;
+  text-align: center;
+}
+.top-7-21-loader span {
+  opacity: 0;
+}
+.top-7-21-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+.top-7-21-button {
+  position: absolute;
+  inset: 46% auto auto 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  background: none;
+  width: 12vw;
+  border: none;
+  font-size: 0;
+  cursor: pointer;
+}
+@media (width < 900px) {
+  .top-7-21-button {
+    width: 21vw;
+  }
+}
+@media (width < 600px) {
+  .top-7-21-button {
+    width: 28vw;
+  }
+}
+.top-7-21-button svg path {
+  fill: var(--playground-body-color-background);
+}
+.top-7-21-stripes {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  touch-action: none;
+  pointer-events: none;
+}
+.top-7-21-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  max-height: 70vh;
+  aspect-ratio: 16/9;
+  font-size: 0;
+}
+@media (width < 900px) {
+  .top-7-21-video {
+    width: 100%;
+    aspect-ratio: 3/4;
+  }
+}
+.top-7-21-video iframe {
+  width: auto;
+  height: 100%;
+  aspect-ratio: inherit;
+}
+@media (width < 900px) {
+  .top-7-21-video iframe {
+    width: 100%;
+  }
+}
+.top-7-21-hit-zone {
+  position: absolute;
+  inset: 0 0 90px;
+  z-index: 2;
+  cursor: grab;
+  touch-action: none;
+  pointer-events: none;
+}
+.top-7-21-hit-zone-active {
+  cursor: grabbing;
+}
+
+footer {
+  position: fixed;
+  inset: auto max(21px, 2.1vw) max(21px, 2.1vw) auto;
+  z-index: 3;
+  font-family: "DM Sans", sans-serif;
+  font-size: max(10px, 0.7vw);
+  font-weight: 400;
+  line-height: 1;
+}
+footer a {
+  color: inherit;
+  text-decoration: none;
+}
+footer a span {
+  color: #ff3d00;
+}
+footer a:not(:has(span)) {
+  text-decoration: underline;
+  text-decoration-color: #ff3d00;
+  text-decoration-thickness: 1px;
+  text-underline-offset: max(2px, 0.21vw);
+}
+    
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pen</title>
+  </head>
+  <body>
+
+    <div class="top-7-21">
+      <div class="top-7-21-loader">
+        <span>Meg & Jack you've inspired us all...</span>
+      </div>
+      <div class="top-7-21-container">
+        <button class="top-7-21-button">Play<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path></svg></button>
+        <canvas class="top-7-21-stripes"></canvas>
+        <div class="top-7-21-video">
+          <div></div>
+        </div>
+        <div class="top-7-21-hit-zone"></div>
+      </div>
+    </div>
+
+
+    <footer>Made with <a href="https://ccrch.com/playground" rel="noopener noreferrer" target="_blank"><<span>❤</span>/></a> at <a href="https://vettvangur.is" rel="noopener noreferrer" target="_blank">Vettvangur</a></footer>
+<!--    <script type="module" src="./scripts.js"></script>  -->
+    <script type="module">
+import gsap from 'gsap';
+const Component = {
+    el: {
+        button: document.querySelector('.top-7-21-button'),
+        canvas: document.querySelector('.top-7-21-stripes'),
+        container: document.querySelector('.top-7-21-container'),
+        hitZone: document.querySelector('.top-7-21-hit-zone'),
+        loader: document.querySelector('.top-7-21-loader'),
+        video: document.querySelector('.top-7-21-video'),
+        videoContainer: document.querySelector('.top-7-21-video > div'),
+    },
+    interactive: false,
+    ytPlayer: null,
+    ytPlayerReady: false,
+    init() {
+        // LenisScroll.init()
+        // gsap.registerPlugin(ScrollTrigger)
+        this.handleVideo(() => {
+            this.resizeContainer();
+            this.handleStripes();
+            gsap
+                //
+                .timeline({ defaults: { duration: 1.234 } })
+                .set(this.el.video, { autoAlpha: 0 })
+                .to(this.el.loader, { autoAlpha: 0, duration: 2.1, pointerEvents: 'none' });
+        });
+    },
+    handleStartButton() {
+        gsap.to(this.el.button, { duration: 0.5, opacity: 0, pointerEvents: 'none', scale: 1.5 });
+        this.ytPlayer?.setVolume(100);
+        this.ytPlayer?.playVideo();
+        gsap.set(this.el.hitZone, { pointerEvents: 'auto' });
+        gsap.to(this.el.video, { autoAlpha: 1, duration: 2.1 });
+    },
+    handleStripes() {
+        const { container, canvas, button, hitZone } = Component.el;
+        if (!container || !canvas || !hitZone) {
+            throw new Error('Container, canvas or hit zone not found');
+        }
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            throw new Error('Could not get 2D context');
+        }
+        const stripes = [];
+        const pointer = {
+            x: 0,
+            y: 0,
+            active: false,
+            down: false,
+        };
+        const gravity = 0.521;
+        const damping = 0.985;
+        // const leftOffsetPercent = 12
+        // const rightOffsetPercent = 12
+        const topOffsetPercent = 0; // 4
+        const bottomOffsetPercent = 4;
+        const segmentLengthMin = 10;
+        const segmentLengthMax = 21;
+        const segmentLengthPercent = 2.1;
+        const stripeHeightVariationMinPercent = 85;
+        const stripeHeightVariationMaxPercent = 92;
+        const lineWidthMin = 1;
+        const lineWidthMax = 210; // 3
+        const lineToSpacingRatio = 0.9;
+        const textureDotRadiusRatio = 0.25;
+        const textureSpacingRatio = 1.2;
+        const iterations = 12;
+        let stripesCount = 63; // 21
+        const getSize = () => ({
+            width: container.clientWidth,
+            height: container.clientHeight,
+        });
+        const clamp = (min, value, max) => {
+            return Math.max(min, Math.min(max, value));
+        };
+        const getSegmentLength = (height) => {
+            return clamp(segmentLengthMin, height * (segmentLengthPercent / 100), segmentLengthMax);
+        };
+        const getSpacing = (width) => {
+            return width / (stripesCount + 1);
+        };
+        const getHorizontalBounds = (width) => {
+            if (!this.el.video || !this.el.video.firstElementChild || !this.el.container)
+                return;
+            const videoPercentWidth = (this.el.video.firstElementChild.clientWidth / this.el.container.clientWidth) * 100;
+            const sideOffsetPercent = ((100 - videoPercentWidth) / 2) * 0.9;
+            // const leftOffset = width * (leftOffsetPercent / 100)
+            // const rightOffset = width * (rightOffsetPercent / 100)
+            const leftOffset = width * (sideOffsetPercent / 100);
+            const rightOffset = width * (sideOffsetPercent / 100);
+            return {
+                leftOffset,
+                rightOffset,
+                availableWidth: Math.max(0, width - leftOffset - rightOffset),
+            };
+        };
+        const getLineWidth = (width) => {
+            return clamp(lineWidthMin, getSpacing(width) * lineToSpacingRatio, lineWidthMax);
+        };
+        const setStripesCount = () => {
+            let count = 63;
+            count = window.innerWidth < 1500 ? 50 : count;
+            count = window.innerWidth < 1000 ? 42 : count;
+            count = window.innerWidth < 800 ? 30 : count;
+            count = window.innerWidth < 500 ? 21 : count;
+            return count;
+        };
+        let segmentLength = getSegmentLength(getSize().height);
+        let lineWidth = getLineWidth(getSize().width);
+        const createStripes = () => {
+            stripes.length = 0;
+            stripesCount = setStripesCount();
+            const { width, height } = getSize();
+            const topOffset = height * (topOffsetPercent / 100);
+            const bottomOffset = height * (bottomOffsetPercent / 100);
+            const availableHeight = Math.max(0, height - topOffset - bottomOffset);
+            const { leftOffset, availableWidth } = getHorizontalBounds(width);
+            const spacing = getSpacing(availableWidth);
+            for (let i = 0; i < stripesCount; i++) {
+                const x = leftOffset + spacing * (i + 1);
+                const stripeHeightVariationPercent = stripeHeightVariationMinPercent + Math.random() * (stripeHeightVariationMaxPercent - stripeHeightVariationMinPercent);
+                const stripeHeight = availableHeight * (stripeHeightVariationPercent / 100);
+                const pointsCount = Math.max(2, Math.round(stripeHeight / segmentLength) + 1);
+                const stripe = [];
+                for (let j = 0; j < pointsCount; j++) {
+                    stripe.push({
+                        x,
+                        y: topOffset + j * segmentLength,
+                        oldX: x,
+                        oldY: topOffset + j * segmentLength,
+                        pinned: j === 0,
+                    });
+                }
+                stripes.push(stripe);
+            }
+        };
+        const resize = () => {
+            const { width, height } = getSize();
+            const pixelRatio = window.devicePixelRatio || 1;
+            const { availableWidth } = getHorizontalBounds(width);
+            segmentLength = getSegmentLength(height);
+            lineWidth = getLineWidth(availableWidth);
+            canvas.width = width * pixelRatio;
+            canvas.height = height * pixelRatio;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+            createStripes();
+        };
+        const updatePoint = (point) => {
+            if (point.pinned)
+                return;
+            const vx = (point.x - point.oldX) * damping;
+            const vy = (point.y - point.oldY) * damping;
+            point.oldX = point.x;
+            point.oldY = point.y;
+            point.x += vx;
+            point.y += vy + gravity;
+            if (!pointer.active)
+                return;
+            const dx = point.x - pointer.x;
+            const dy = point.y - pointer.y;
+            const distance = Math.hypot(dx, dy);
+            const isMobile = window.matchMedia('(pointer: coarse)').matches;
+            const mobileMultiplier = isMobile ? 0.5 : 1;
+            const radius = (pointer.down ? 120 : 60) * mobileMultiplier;
+            const strength = (pointer.down ? 15 : 12) * mobileMultiplier;
+            if (distance > 0 && distance < radius) {
+                const force = (1 - distance / radius) * strength;
+                point.x += (dx / distance) * force;
+                point.y += (dy / distance) * force;
+            }
+        };
+        const solveConstraint = (a, b) => {
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const distance = Math.hypot(dx, dy) || 1;
+            const difference = segmentLength - distance;
+            const percent = difference / distance / 2;
+            const offsetX = dx * percent;
+            const offsetY = dy * percent;
+            if (!a.pinned) {
+                a.x -= offsetX;
+                a.y -= offsetY;
+            }
+            if (!b.pinned) {
+                b.x += offsetX;
+                b.y += offsetY;
+            }
+        };
+        const update = () => {
+            for (const stripe of stripes) {
+                for (const point of stripe) {
+                    updatePoint(point);
+                }
+                for (let i = 0; i < iterations; i++) {
+                    for (let j = 0; j < stripe.length - 1; j++) {
+                        solveConstraint(stripe[j], stripe[j + 1]);
+                    }
+                }
+            }
+        };
+        const drawStripeTexture = (stripe) => {
+            const dotRadius = clamp(1, lineWidth * textureDotRadiusRatio, lineWidth / 2);
+            const dotSpacing = Math.max(dotRadius * 2.5, lineWidth * textureSpacingRatio);
+            const restStripeLength = (stripe.length - 1) * segmentLength;
+            const bottomPadding = dotRadius;
+            ctx.beginPath();
+            for (let distance = 0; distance <= restStripeLength - bottomPadding; distance += dotSpacing) {
+                const segmentIndex = Math.min(Math.floor(distance / segmentLength), stripe.length - 2);
+                const segmentProgress = (distance - segmentIndex * segmentLength) / segmentLength;
+                const a = stripe[segmentIndex];
+                const b = stripe[segmentIndex + 1];
+                const dx = b.x - a.x;
+                const dy = b.y - a.y;
+                const x = a.x + dx * segmentProgress;
+                const y = a.y + dy * segmentProgress;
+                ctx.moveTo(x + dotRadius, y);
+                ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
+            }
+            ctx.fill();
+        };
+        const drawTopStripe = () => {
+            const firstStripe = stripes[0];
+            const lastStripe = stripes[stripes.length - 1];
+            if (!firstStripe || !lastStripe)
+                return;
+            const left = firstStripe[0].x - lineWidth / 2;
+            const right = lastStripe[0].x + lineWidth / 2;
+            ctx.fillRect(left, 0, right - left, lineWidth);
+        };
+        const draw = () => {
+            const { width, height } = getSize();
+            const stripeColor = '#fff'; // getCssVar(null, '--playground-body-color-text') || '#fff'
+            ctx.clearRect(0, 0, width, height);
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = stripeColor;
+            ctx.lineCap = 'square';
+            ctx.fillStyle = stripeColor;
+            for (const stripe of stripes) {
+                ctx.beginPath();
+                for (let i = 0; i < stripe.length; i++) {
+                    const point = stripe[i];
+                    if (i === 0) {
+                        ctx.moveTo(point.x, point.y);
+                    }
+                    else {
+                        ctx.lineTo(point.x, point.y);
+                    }
+                }
+                ctx.stroke();
+                ctx.save();
+                ctx.fillStyle = '#000';
+                ctx.globalCompositeOperation = 'destination-out';
+                drawStripeTexture(stripe);
+                ctx.restore();
+            }
+            ctx.fillStyle = stripeColor;
+            drawTopStripe();
+        };
+        const tick = () => {
+            update();
+            draw();
+            requestAnimationFrame(tick);
+        };
+        const setPointerFromClientPosition = (clientX, clientY) => {
+            const rect = canvas.getBoundingClientRect();
+            pointer.x = clientX - rect.left;
+            pointer.y = clientY - rect.top;
+            pointer.active = true;
+        };
+        hitZone.addEventListener('pointermove', (event) => {
+            if (!this.interactive)
+                return;
+            setPointerFromClientPosition(event.clientX, event.clientY);
+        });
+        hitZone.addEventListener('pointerdown', (event) => {
+            if (!this.interactive)
+                return;
+            setPointerFromClientPosition(event.clientX, event.clientY);
+            pointer.down = true;
+            hitZone.setPointerCapture(event.pointerId);
+            hitZone.classList.add('top-7-21-hit-zone-active');
+        });
+        hitZone.addEventListener('pointerup', (event) => {
+            if (!this.interactive)
+                return;
+            pointer.down = false;
+            hitZone.releasePointerCapture(event.pointerId);
+            hitZone.classList.remove('top-7-21-hit-zone-active');
+        });
+        hitZone.addEventListener('pointercancel', () => {
+            if (!this.interactive)
+                return;
+            pointer.down = false;
+            pointer.active = false;
+        });
+        hitZone.addEventListener('pointerleave', () => {
+            if (!this.interactive)
+                return;
+            if (pointer.down)
+                return;
+            pointer.active = false;
+        });
+        const resizeObserver = new ResizeObserver(() => {
+            resize();
+        });
+        resizeObserver.observe(container);
+        resize();
+        tick();
+        button?.addEventListener('pointerdown', (event) => {
+            setPointerFromClientPosition(event.clientX, event.clientY);
+            pointer.down = true;
+            this.interactive = true;
+            window.setTimeout(() => {
+                pointer.down = false;
+            }, 123);
+            window.setTimeout(() => {
+                pointer.active = false;
+            }, 234);
+            this.handleStartButton();
+        });
+    },
+    handleVideo(callback) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        window.onYouTubeIframeAPIReady = () => {
+            this.ytPlayer = new YT.Player(this.el.videoContainer, {
+                height: '100%',
+                width: '100%',
+                videoId: 'U10LnbIf72k',                
+                playerVars: {
+                    start: 0,
+                    autoplay: 0,
+                    controls: 1,
+                    fs: 0,
+                    iv_load_policy: 3,
+                    loop: 1,
+                    modestbranding: 1,
+                    mute: 0,
+                    playsinline: 1,
+                    rel: 0,
+           //   AJOUTEZ CETTE LIGNE CI-DESSOUS :
+           //       origin: window.location.origin,                     
+                },
+                events: {
+                    onReady: () => {
+                        if (!this.ytPlayerReady) {
+                            this.ytPlayerReady = true;
+                            callback();
+                        }
+                    },
+                },
+            });
+        };
+    },
+    resizeContainer() {
+        // Need this to reliably get the video height after it has loaded and is playing
+        // and align it well with canvas stripes that go 100vw with side paddings
+        const resize = () => {
+            // const w = this.el.video.clientWidth
+            const h = this.el.video?.clientHeight;
+            gsap.set(this.el.container, { height: h });
+        };
+        resize();
+        window.addEventListener('resize', resize);
+    },
+};
+Component.init(); 
+    </script>
+  </body>
+</html>
